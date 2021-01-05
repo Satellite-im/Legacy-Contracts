@@ -1,4 +1,5 @@
-pragma solidity >=0.4.22 <0.7.0;
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.7.0 <0.8.0;
 
 /**
  * @title DwellerID
@@ -16,6 +17,8 @@ contract DwellerID {
     bytes32 private photoHashBeg;
     bytes32 private photoHashEnd;
 
+    address[] private servers;
+
     // Events
     event DwellerSet(address indexed dweller);
     event PhotoSet (
@@ -30,12 +33,22 @@ contract DwellerID {
         require(msg.sender == dweller, "Not the dweller we're expecting.");
         _;
     }
+    modifier isRegistry() {
+        // If the first argument of 'require' evaluates to 'false', execution terminates and all
+        // changes to the state and to Ether balances are reverted.
+        require(msg.sender == registry, "Only callable by registry.");
+        _;
+    }
+    modifier isRegistryOrOwner() {
+        require(msg.sender == registry || msg.sender == dweller, "Only callable by registry or owner.");
+        _;
+    }
 
     /**
      * @dev Set contract deployer as dweller (owner)
      * @param _name What should we call you, dweller?
      */
-    constructor(bytes32 _name, address _dweller) public {
+    constructor(bytes32 _name, address _dweller) {
         registry = msg.sender;
         dweller = _dweller;
         name = _name;
@@ -102,10 +115,19 @@ contract DwellerID {
         bytes memory joined = new bytes(64);
         // Join the two hash parts of photos IPFS hash
         assembly {
-            mstore(add(joined, 32), sload(photoHashBeg_slot))
-            mstore(add(joined, 64), sload(photoHashEnd_slot))
+            mstore(add(joined, 32), sload(photoHashBeg.slot))
+            mstore(add(joined, 64), sload(photoHashEnd.slot))
         }
         return joined; 
+    }
+
+    function getServers() 
+        public
+        view
+        isRegistryOrOwner
+        returns (address[] memory)
+    {
+        return servers;
     }
 
     /**
@@ -113,12 +135,42 @@ contract DwellerID {
      */
 
     /**
+     * @dev Add a server from list of server contracts
+     * @param server Address pointing to server contract
+     */
+    function joinServer(address server) 
+        public
+        isRegistry
+    {
+        servers.push(server);
+    }
+
+    /**
+     * @dev Remove server from list of server contracts
+     * @param server Address pointing to server contract
+     */
+    function leaveServer(address server) 
+        public
+        isRegistry
+    {
+        if (servers.length == 0) return;
+        uint indx;
+        for (uint i = 0; i < servers.length-1; i++){
+            if (servers[i] == server) {
+                indx = i;
+            }
+        }
+        delete servers[indx];
+        
+    }
+
+    /**
      * @dev Change dweller's display name
      * @param _name What should we call you, dweller?
      */
     function setDwellerName(bytes32 _name) 
-        public 
-        isOwner 
+        public
+        isOwner
     {
         name = _name;
     }
