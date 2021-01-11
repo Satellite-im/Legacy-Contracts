@@ -216,7 +216,7 @@ contract Server {
         delete groups[indx];
         emit GroupDeleted(groupName);
     }
-    
+
     function addChannelToGroup(bytes32 groupName, bytes32 channelName)
         public
         isAdmin
@@ -224,7 +224,7 @@ contract Server {
         groupings[groupName].push(channelName);
         emit ChannelGrouped(groupName, channelName);
     }
-    
+
     function removeChannelFromGroup(bytes32 groupName, uint channelIndex)
         public
         isAdmin
