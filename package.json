@@ -1,0 +1,32 @@
+{
+  "name": "Vault74-Contracts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "npx truffle test",
+    "start:ganache": "ganache-cli",
+    "deploy:mumbai": "npx truffle deploy --network mumbai",
+    "flat": "npx truffle-flattener contracts/Vault74Registry.sol > build/registry-flat.sol"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Satellite-im/Vault74-Contracts.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Satellite-im/Vault74-Contracts/issues"
+  },
+  "homepage": "https://github.com/Satellite-im/Vault74-Contracts#readme",
+  "devDependencies": {
+    "@truffle/hdwallet-provider": "^1.2.2",
+    "ganache-cli": "^6.12.2",
+    "truffle": "^5.2.3",
+    "truffle-flattener": "^1.5.0"
+  }
+}
