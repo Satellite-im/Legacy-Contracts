@@ -24,7 +24,7 @@ contract Friends {
 
     event FriendRequestSent(address indexed sentTo);
 
-    event FriendRequestAccepted(address indexed sentTo);
+    event FriendRequestAccepted(address indexed sentFrom);
 
     event FriendRequestDenied(address indexed sentFrom);
     
@@ -197,7 +197,7 @@ contract Friends {
         addFriend(msg.sender, receiverFriend);
         addFriend(friendRequest.sender, senderFriend);
 
-        emit FriendRequestAccepted(msg.sender);
+        emit FriendRequestAccepted(to);
     }
 
     /**
