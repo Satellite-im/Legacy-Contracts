@@ -201,6 +201,23 @@ contract Friends {
     }
 
     /**
+     * @dev Deny a friend request
+     */
+    function denyRequest(address to) public {
+        uint friendRequestIndex = requestsTracker[msg.sender][to];
+        
+        // Check if the friend request exist
+        require(friendRequestIndex != 0, "Request does not exist");
+        
+        // Check if the friend request has already been removed
+        require(friendRequestIndex != MAX_UINT, "Friend request has been removed");
+        
+        removeRequest(msg.sender, to);
+
+        emit FriendRequestDenied(to);
+    }
+
+    /**
      * @dev Remove a friend request
      */
     function removeRequest(address to) public {

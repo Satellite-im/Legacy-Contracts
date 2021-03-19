@@ -192,5 +192,41 @@ contract("Friend", (accounts) => {
     );
   });
 
-  
+  it("User should be able to deny a request", async function () {
+    const instance = await Friends.deployed();
+
+    const senderPublicKey = processPublicKey(getWallet(0));
+
+    let error = null;
+
+    await instance
+      .makeRequest(accounts[0], senderPublicKey, {
+        from: accounts[1],
+      })
+      .catch((e) => {
+        error = e;
+      });
+
+    assert.equal(error, null, "Unable to make a friend request");
+
+    const requestsBefore = await instance.getRequests();
+
+    await instance
+      .denyRequest(accounts[1], {
+        from: accounts[0],
+      })
+      .catch((e) => {
+        error = e;
+      });
+
+    assert.equal(error, null, "Unable to deny a friend request");
+
+    const requestsAfter = await instance.getRequests();
+
+    assert.equal(
+      requestsBefore.length > requestsAfter.length,
+      true,
+      "Request has not been removed"
+    );
+  });
 });
