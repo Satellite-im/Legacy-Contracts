@@ -128,32 +128,6 @@ contract("Friend", (accounts) => {
     );
   });
 
-  it("User should be able to remove a request", async function () {
-    const instance = await Friends.deployed();
-
-    const requestsBefore = await instance.getRequests();
-
-    let error = null;
-
-    await instance
-      .removeRequest(accounts[0], {
-        from: accounts[1],
-      })
-      .catch((e) => {
-        error = e;
-      });
-
-    assert.notEqual(error, null, "Unable to remove a friend request");
-
-    const requestsAfter = await instance.getRequests();
-
-    assert.equal(
-      requestsBefore.length,
-      requestsAfter.length,
-      "Request has not been removed"
-    );
-  });
-
   it("User should be able to remove a friend", async function () {
     const instance = await Friends.deployed();
 
@@ -169,7 +143,7 @@ contract("Friend", (accounts) => {
         error = e;
       });
 
-    assert.notEqual(error, null, "Unable to remove a friend");
+    assert.equal(error, null, "Unable to remove a friend");
 
     const friendsAfter = await instance.getRequests();
 
@@ -179,4 +153,44 @@ contract("Friend", (accounts) => {
       "Friend has not been removed"
     );
   });
+
+  it("User should be able to remove a request", async function () {
+    const instance = await Friends.deployed();
+
+    const senderPublicKey = processPublicKey(getWallet(0));
+
+    let error = null;
+
+    await instance
+      .makeRequest(accounts[0], senderPublicKey, {
+        from: accounts[1],
+      })
+      .catch((e) => {
+        error = e;
+      });
+
+    assert.equal(error, null, "Unable to make a friend request");
+
+    const requestsBefore = await instance.getRequests();
+
+    await instance
+      .removeRequest(accounts[0], {
+        from: accounts[1],
+      })
+      .catch((e) => {
+        error = e;
+      });
+
+    assert.equal(error, null, "Unable to remove a friend request");
+
+    const requestsAfter = await instance.getRequests();
+
+    assert.equal(
+      requestsBefore.length > requestsAfter.length,
+      true,
+      "Request has not been removed"
+    );
+  });
+
+  
 });

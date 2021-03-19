@@ -84,6 +84,7 @@ contract Friends {
      * @dev Removes a friend from the friends mapping
      */
     function removeFriend(address _from, address _toRemove) internal {
+        require(friends[_from].length > 0, "There are no friends to remove");
         // Index of the element to remove
         uint index = friendsTracker[_from][_toRemove] - 1;
         uint lastIndex = friends[_from].length - 1;
@@ -95,9 +96,10 @@ contract Friends {
             friends[_from][index] = last;
             // Update the Index
             friendsTracker[_from][last.dweller] = index;
-            // Clear the previous index by setting the maximum integer
-            friendsTracker[_from][_toRemove] = MAX_UINT;
         }
+        
+        // Clear the previous index by setting the maximum integer
+        friendsTracker[_from][_toRemove] = MAX_UINT;
         
         // Reduce the size of the array by 1
         friends[_from].pop();
@@ -126,6 +128,7 @@ contract Friends {
      * @dev Removes a friend request from the requests mapping
      */
     function removeRequest(address _from, address _toRemove) internal {
+        require(requests[_from].length > 0, "There are no requests to remove");
         // Index of the element to remove
         uint index = requestsTracker[_from][_toRemove] - 1;
         uint lastIndex = requests[_from].length - 1;
@@ -137,9 +140,10 @@ contract Friends {
             requests[_from][index] = last;
             // Update the Index
             requestsTracker[_from][last.sender] = index;
-            // Clear the previous index by setting the maximum integer
-            requestsTracker[_from][_toRemove] = MAX_UINT;
         }
+        
+        // Clear the previous index by setting the maximum integer
+        requestsTracker[_from][_toRemove] = MAX_UINT;
         
         // Reduce the size of the array by 1
         requests[_from].pop();
@@ -150,7 +154,7 @@ contract Friends {
      */
     function makeRequest(address to, bytes memory pubkey) public {
         uint index = requestsTracker[to][msg.sender];
-        require(index == 0, "Request already sent");
+        require(index == 0 || index == MAX_UINT, "Request already sent");
 
         addRequest(
             to,
@@ -210,7 +214,7 @@ contract Friends {
      * @dev Remove a friend
      */
     function removeFriend(address _toRemove) public {
-        uint index = requestsTracker[_toRemove][msg.sender];
+        uint index = requestsTracker[msg.sender][_toRemove];
         require(index != 0, "Friend do not exsist");
 
         removeFriend(msg.sender, _toRemove);
