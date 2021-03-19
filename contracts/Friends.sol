@@ -26,7 +26,7 @@ contract Friends {
 
     event FriendRequestAccepted(address indexed sentTo);
 
-    event FriendRequestDenied(address indexed sentTo);
+    event FriendRequestDenied(address indexed sentFrom);
     
     // Emitted when a user removes a friend
     event FriendRemoved(address indexed friendRemoved);
