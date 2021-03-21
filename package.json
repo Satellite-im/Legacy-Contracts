@@ -29,5 +29,8 @@
     "ganache-cli": "^6.12.2",
     "truffle": "^5.2.3",
     "truffle-flattener": "^1.5.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^3.4.1"
   }
 }
