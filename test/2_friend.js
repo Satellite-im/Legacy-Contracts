@@ -132,6 +132,7 @@ contract("Friend", (accounts) => {
     const instance = await Friends.deployed();
 
     const friendsBefore = await instance.getFriends();
+    const otherFriendsbefore = await instance.getFriends({from: accounts[1]});
 
     let error = null;
 
@@ -146,11 +147,18 @@ contract("Friend", (accounts) => {
     assert.equal(error, null, "Unable to remove a friend");
 
     const friendsAfter = await instance.getRequests();
+    const otherFriendsAfter = await instance.getFriends({from: accounts[1]});
 
     assert.equal(
       friendsBefore.length > friendsAfter.length,
       true,
       "Friend has not been removed"
+    );
+
+    assert.equal(
+      otherFriendsbefore.length > otherFriendsAfter.length,
+      true,
+      "Friend has not been removed from the other account"
     );
   });
 

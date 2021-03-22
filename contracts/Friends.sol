@@ -65,7 +65,7 @@ contract Friends {
      * @dev Returns a friend from the friends mapping
      * @return fr
      */
-    function getFriend(address _from, address _toGet) internal view returns (Friend memory fr) {
+    function _getFriend(address _from, address _toGet) internal view returns (Friend memory fr) {
         uint index = friendsTracker[_from][_toGet];
         require(index != 0, "Friend does not exist");
         return friends[_from][index - 1];
@@ -74,7 +74,7 @@ contract Friends {
     /**
      * @dev Adds a friend to the friends mapping
      */
-    function addFriend(address _to, Friend memory fr) internal {
+    function _addFriend(address _to, Friend memory fr) internal {
         friends[_to].push(fr);
         uint index = friends[_to].length;
         friendsTracker[_to][fr.dweller] = index;
@@ -83,7 +83,7 @@ contract Friends {
     /**
      * @dev Removes a friend from the friends mapping
      */
-    function removeFriend(address _from, address _toRemove) internal {
+    function _removeFriend(address _from, address _toRemove) internal {
         require(friends[_from].length > 0, "There are no friends to remove");
         // Index of the element to remove
         uint index = friendsTracker[_from][_toRemove] - 1;
@@ -109,7 +109,7 @@ contract Friends {
      * @dev Returns a friend request from the requests mapping
      * @return fr
      */
-    function getRequest(address _from, address _toGet) internal view returns (FriendRequest memory fr) {
+    function _getRequest(address _from, address _toGet) internal view returns (FriendRequest memory fr) {
         uint index = requestsTracker[_from][_toGet];
         require(index != 0, "Request does not exist");
         return requests[_from][index];
@@ -118,7 +118,7 @@ contract Friends {
     /**
      * @dev Adds a friend request to the requests mapping
      */
-    function addRequest(address _to, FriendRequest memory _from) internal {
+    function _addRequest(address _to, FriendRequest memory _from) internal {
         requests[_to].push(_from);
         uint index = requests[_to].length;
         requestsTracker[_to][_from.sender] = index;
@@ -127,7 +127,7 @@ contract Friends {
     /**
      * @dev Removes a friend request from the requests mapping
      */
-    function removeRequest(address _from, address _toRemove) internal {
+    function _removeRequest(address _from, address _toRemove) internal {
         require(requests[_from].length > 0, "There are no requests to remove");
         // Index of the element to remove
         uint index = requestsTracker[_from][_toRemove] - 1;
@@ -156,7 +156,7 @@ contract Friends {
         uint index = requestsTracker[to][msg.sender];
         require(index == 0 || index == MAX_UINT, "Request already sent");
 
-        addRequest(
+        _addRequest(
             to,
             FriendRequest(msg.sender, pubkey)
         );
@@ -193,9 +193,9 @@ contract Friends {
             pubkey
         );
         
-        removeRequest(msg.sender, friendRequest.sender);
-        addFriend(msg.sender, receiverFriend);
-        addFriend(friendRequest.sender, senderFriend);
+        _removeRequest(msg.sender, friendRequest.sender);
+        _addFriend(msg.sender, receiverFriend);
+        _addFriend(friendRequest.sender, senderFriend);
 
         emit FriendRequestAccepted(to);
     }
@@ -212,7 +212,7 @@ contract Friends {
         // Check if the friend request has already been removed
         require(friendRequestIndex != MAX_UINT, "Friend request has been removed");
         
-        removeRequest(msg.sender, to);
+        _removeRequest(msg.sender, to);
 
         emit FriendRequestDenied(to);
     }
@@ -224,7 +224,7 @@ contract Friends {
         uint index = requestsTracker[to][msg.sender];
         require(index != 0, "Request do not exsist");
 
-        removeRequest(to, msg.sender);
+        _removeRequest(to, msg.sender);
     }
 
     /**
@@ -234,7 +234,8 @@ contract Friends {
         uint index = requestsTracker[msg.sender][_toRemove];
         require(index != 0, "Friend do not exsist");
 
-        removeFriend(msg.sender, _toRemove);
+        _removeFriend(msg.sender, _toRemove);
+        _removeFriend(_toRemove, msg.sender);
     }
     
     /**
