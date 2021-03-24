@@ -1,3 +1,4 @@
+const { Promise, console } = require("@ungap/global-this");
 const ethers = require("ethers");
 const { readFileSync } = require("fs");
 const Friends = artifacts.require("Friends");
@@ -132,7 +133,7 @@ contract("Friend", (accounts) => {
     const instance = await Friends.deployed();
 
     const friendsBefore = await instance.getFriends();
-    const otherFriendsbefore = await instance.getFriends({from: accounts[1]});
+    const otherFriendsbefore = await instance.getFriends({ from: accounts[1] });
 
     let error = null;
 
@@ -147,7 +148,7 @@ contract("Friend", (accounts) => {
     assert.equal(error, null, "Unable to remove a friend");
 
     const friendsAfter = await instance.getRequests();
-    const otherFriendsAfter = await instance.getFriends({from: accounts[1]});
+    const otherFriendsAfter = await instance.getFriends({ from: accounts[1] });
 
     assert.equal(
       friendsBefore.length > friendsAfter.length,
@@ -236,5 +237,93 @@ contract("Friend", (accounts) => {
       true,
       "Request has not been removed"
     );
+  });
+
+  it("Should be possible to accept a request in the middle when multiple", async function () {
+    const instance = await Friends.deployed();
+
+    const senderPublicKey = processPublicKey(getWallet(0));
+
+    let error = null;
+
+    await Promise.all(
+      [4, 5, 6].map((i) =>
+        instance.makeRequest(accounts[0], senderPublicKey, {
+          from: accounts[i],
+        })
+      )
+    ).catch((e) => {
+      console.log(e);
+      error = e;
+    });
+
+    const requestsAfter = await instance.getRequests();
+
+    const indexes = await Promise.all(
+      [4, 5, 6].map((i) =>
+        instance.getRequestTracker(accounts[0], accounts[i], {
+          from: accounts[i],
+        })
+      )
+    ).catch((e) => {
+      console.log(e);
+      error = e;
+    });
+
+    await instance
+      .acceptRequest(accounts[5], threadId, senderPublicKey, {
+        from: accounts[0],
+      })
+      .catch((e) => {
+        error = e;
+      });
+
+    const indexesAfter = await Promise.all(
+      [4, 5, 6].map((i) =>
+        instance.getRequestTracker(accounts[0], accounts[i], {
+          from: accounts[i],
+        })
+      )
+    ).catch((e) => {
+      error = e;
+    });
+
+    assert.equal(
+      indexes[0],
+      1,
+      "Request has the wrong index"
+    );
+
+    assert.equal(
+      indexes[1],
+      2,
+      "Request has the wrong index"
+    );
+
+    assert.equal(
+      indexes[2],
+      3,
+      "Request has the wrong index"
+    );
+
+    assert.equal(
+      indexesAfter[0],
+      1,
+      "Request has the wrong index"
+    );
+
+    assert.equal(
+      indexesAfter[1].toString(),
+      ethers.constants.MaxUint256.toString(),
+      "Request has the wrong index"
+    );
+
+    assert.equal(
+      indexesAfter[2],
+      2,
+      "Request has the wrong index"
+    );
+
+    
   });
 });

@@ -95,7 +95,7 @@ contract Friends {
             // Change the last with the element to remove
             friends[_from][index] = last;
             // Update the Index
-            friendsTracker[_from][last.dweller] = index;
+            friendsTracker[_from][last.dweller] = index + 1;
         }
         
         // Clear the previous index by setting the maximum integer
@@ -139,7 +139,7 @@ contract Friends {
             // Change the last with the element to remove
             requests[_from][index] = last;
             // Update the Index
-            requestsTracker[_from][last.sender] = index;
+            requestsTracker[_from][last.sender] = index + 1;
         }
         
         // Clear the previous index by setting the maximum integer
