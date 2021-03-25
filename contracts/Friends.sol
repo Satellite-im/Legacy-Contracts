@@ -231,7 +231,7 @@ contract Friends {
      * @dev Remove a friend
      */
     function removeFriend(address _toRemove) public {
-        uint index = requestsTracker[msg.sender][_toRemove];
+        uint index = friendsTracker[msg.sender][_toRemove];
         require(index != 0, "Friend do not exsist");
 
         _removeFriend(msg.sender, _toRemove);
