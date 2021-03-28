@@ -19,6 +19,8 @@ contract DwellerID {
 
     address[] private servers;
 
+    string public status = "Sitting in orbit...";
+
     // Events
     event DwellerSet(address indexed dweller);
     event PhotoSet (
@@ -186,5 +188,16 @@ contract DwellerID {
         photoHashBeg = hash[0];
         photoHashEnd = hash[1];
         emit PhotoSet(photoHashBeg, photoHashEnd);
+    }
+
+    /**
+     * @dev Update the users status
+     * @param _status string status to set.
+     */
+    function setStatus(string _status) 
+        public
+        isOwner
+    {
+        status = _status;
     }
 }

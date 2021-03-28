@@ -7,6 +7,14 @@ import "./Sticker.sol";
 contract StickerFactory {
     address owner;
     address[] stickers;
+    mapping(address => Artist) artists;
+    
+    struct Artist {
+        address addr;
+        string name;
+        string signature;
+        string description;
+    }
 
     modifier byOwner {
         require(msg.sender == owner, "Not allowed");
@@ -44,6 +52,19 @@ contract StickerFactory {
     function getAvailableSets() public view returns (address[] memory) {
         return stickers;
     }
-    
+
+    function registerArtist(
+        address artistAddr,
+        string name,
+        string signature,
+        string description) public byOwner {
+            Artist artist = new Artist(
+                artistAddr,
+                name,
+                signature,
+                description
+            );
+            artists[artistAddr] = artist;
+    }
 }
 
