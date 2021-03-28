@@ -194,7 +194,7 @@ contract DwellerID {
      * @dev Update the users status
      * @param _status string status to set.
      */
-    function setStatus(string _status) 
+    function setStatus(string memory _status) 
         public
         isOwner
     {

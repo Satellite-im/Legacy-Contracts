@@ -55,15 +55,15 @@ contract StickerFactory {
 
     function registerArtist(
         address artistAddr,
-        string name,
-        string signature,
-        string description) public byOwner {
-            Artist artist = new Artist(
-                artistAddr,
-                name,
-                signature,
-                description
-            );
+        string memory name,
+        string memory signature,
+        string memory description) public byOwner {
+            Artist memory artist = Artist({
+                addr: artistAddr,
+                name: name,
+                signature: signature,
+                description: description
+            });
             artists[artistAddr] = artist;
     }
 }
