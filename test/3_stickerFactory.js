@@ -150,10 +150,9 @@ contract("StickerFactory", (accounts) => {
     const factoryInstance = await StickerFactory.deployed();
     const sets = await factoryInstance.getAvailableSets();
     assert(sets.length > 0, "No sets available. Unable to proceed with test");
-    const instance = await Sticker.at(sets[0]);
 
     let error = null;
-    await instance.registerArtist(
+    await factoryInstance.registerArtist(
       "0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7",
       "Banksy", 
       "Qmaz17CGuuo2gU9V9VW3fHs49ufGVA1hvr3e7r4fonzcsG", 
