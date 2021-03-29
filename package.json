@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/Satellite-im/Vault74-Contracts#readme",
   "devDependencies": {
-    "@truffle/hdwallet-provider": "^1.2.5",
+    "@truffle/hdwallet-provider": "1.1.18",
     "eth-gas-reporter": "^0.2.22",
     "ganache-cli": "^6.12.2",
     "truffle": "^5.2.3",

@@ -56,7 +56,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -8588,12 +8589,13 @@
     "80001": {
       "events": {},
       "links": {},
-      "address": "0x6ef1fcb3a695d962B97C2012D3B831356C199ebF",
-      "transactionHash": "0x0f2c5bce8e6a72dc9ad2c7c7c505e1823f5b219ed4a85dcdb5605ce65f0ae9d5"
+      "address": "0x26631E322280B34E44CEDe9Bf4513b3AD8040d48",
+      "transactionHash": "0xa8b81bddebdb13cca54cb5680c2bcbf6a40bc206d0d111234ff4136a7614a2eb"
     }
   },
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-03-28T23:00:39.518Z",
+  "updatedAt": "2021-03-28T23:50:01.072Z",
+  "networkType": "ethereum",
   "devdoc": {
     "details": "Implements storage and assignment of Vault74 DwellerIDs",
     "kind": "dev",

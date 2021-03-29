@@ -5,6 +5,8 @@ const Friends = artifacts.require("Friends");
 
 const secret = readFileSync(".secret").toString().trim();
 
+console.log('secret', secret);
+
 function getWallet(index) {
   return ethers.Wallet.fromMnemonic(secret, `m/44'/60'/0'/0/${index}`);
 }

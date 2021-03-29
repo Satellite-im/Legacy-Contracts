@@ -75,7 +75,8 @@
         }
       ],
       "stateMutability": "pure",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -190,7 +191,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -215,7 +217,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.7.6+commit.7338295f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"friendRemoved\",\"type\":\"address\"}],\"name\":\"FriendRemoved\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sentFrom\",\"type\":\"address\"}],\"name\":\"FriendRequestAccepted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sentFrom\",\"type\":\"address\"}],\"name\":\"FriendRequestDenied\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sentTo\",\"type\":\"address\"}],\"name\":\"FriendRequestSent\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"bytes32[2]\",\"name\":\"thread\",\"type\":\"bytes32[2]\"},{\"internalType\":\"bytes\",\"name\":\"pubkey\",\"type\":\"bytes\"}],\"name\":\"acceptRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"pub\",\"type\":\"bytes\"}],\"name\":\"calculateAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"addr\",\"type\":\"address\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"denyRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getFriends\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"dweller\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"threadHash1\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"threadHash2\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"pubkey\",\"type\":\"bytes\"}],\"internalType\":\"struct Friends.Friend[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getRequests\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"pubkey\",\"type\":\"bytes\"}],\"internalType\":\"struct Friends.FriendRequest[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"pubkey\",\"type\":\"bytes\"}],\"name\":\"makeRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_toRemove\",\"type\":\"address\"}],\"name\":\"removeFriend\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"removeRequest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Maps friend requests along with associated threadIDs\",\"kind\":\"dev\",\"methods\":{\"acceptRequest(address,bytes32[2],bytes)\":{\"details\":\"Accept a friend request\"},\"calculateAddress(bytes)\":{\"details\":\"Converts the given public key to ethereum address\",\"returns\":{\"addr\":\"addr\"}},\"constructor\":{\"details\":\"Create a new Friends contract\"},\"denyRequest(address)\":{\"details\":\"Deny a friend request\"},\"getFriends()\":{\"details\":\"Returns the friends list related to the msg.sender\"},\"getRequests()\":{\"details\":\"Returns the requests list related directed to the msg.sender\"},\"makeRequest(address,bytes)\":{\"details\":\"Add a new friend request\"},\"removeFriend(address)\":{\"details\":\"Remove a friend\"},\"removeRequest(address)\":{\"details\":\"Remove a friend request\"}},\"title\":\"FriendRequester\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/retro/Git/Satellite/Satellite-Contracts/contracts/Friends.sol\":\"Friends\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/retro/Git/Satellite/Satellite-Contracts/contracts/Friends.sol\":{\"keccak256\":\"0xc7bc0bd01fa0482f55523c5833c63e12f4e7c98a2e6de539bffd3846733986ba\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d7869cd19f0456d693bbd3e09034edca11a57dff73e534bbb1d3dfdcc5426a0e\",\"dweb:/ipfs/QmSgViB3x5yhHy8NkRvT2XzPHa4iyq7zMenrpHrc7YUPkf\"]}},\"version\":1}",
@@ -26877,14 +26880,68 @@
   },
   "networks": {
     "80001": {
-      "events": {},
+      "events": {
+        "0xdf33258b68a0f7bc14cb0d28dd33feae582f5b4e758e74b97056debaef5605f5": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "friendRemoved",
+              "type": "address"
+            }
+          ],
+          "name": "FriendRemoved",
+          "type": "event"
+        },
+        "0x529983ca112b24c7d4fa4aab3910838a962db8fa4387508841122e3b2eba4f8f": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "sentFrom",
+              "type": "address"
+            }
+          ],
+          "name": "FriendRequestAccepted",
+          "type": "event"
+        },
+        "0x0a9e7bdf167af5510b775c63b125451644c99a91b541b3813f6cb569b9fe0daf": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "sentFrom",
+              "type": "address"
+            }
+          ],
+          "name": "FriendRequestDenied",
+          "type": "event"
+        },
+        "0x31ed3729d46aa09de79e774f1f2fc8e25e3a427d0f4d3df9734059ca59c3b313": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "sentTo",
+              "type": "address"
+            }
+          ],
+          "name": "FriendRequestSent",
+          "type": "event"
+        }
+      },
       "links": {},
-      "address": "0x8cc8feF7559346d03C8202413273341a85a9F979",
-      "transactionHash": "0xebc972cb495e0d8eae47f31a0a5e0ecccdb1d62878cfdd0bd439b2f0cfa24eac"
+      "address": "0x7874124148DBAcC66647dc7545e15a684B0fE2d1",
+      "transactionHash": "0x1a7cf5cd76d366136e5f06e06203c1489f91c1b60b81eb4d465419c76e5631e9"
     }
   },
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-03-28T23:00:39.484Z",
+  "updatedAt": "2021-03-28T23:50:01.080Z",
+  "networkType": "ethereum",
   "devdoc": {
     "details": "Maps friend requests along with associated threadIDs",
     "kind": "dev",
