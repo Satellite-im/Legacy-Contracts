@@ -1,14 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.7.6;
+pragma abicoder v2;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./Sticker.sol";
 
 contract StickerFactory {
-    address owner;
-    address[] stickers;
-    mapping(address => Artist) public artists;
-    
     struct Artist {
         address addr;
         string name;
@@ -16,8 +13,22 @@ contract StickerFactory {
         string description;
     }
 
+    struct StickerInfo {
+        address stickerContract;
+        address creator;
+    }
+
+    address owner;
+    StickerInfo[] stickers;
+    mapping(address => Artist) public artists;
+
     modifier byOwner {
         require(msg.sender == owner, "Not allowed");
+        _;
+    }
+
+    modifier byArtist {
+        require(artists[msg.sender].addr != address(0), "Not allowed");
         _;
     }
 
@@ -33,7 +44,7 @@ contract StickerFactory {
         uint limit, 
         string memory uri,
         uint initialPrice
-    ) public {
+    ) public byArtist {
         require(limit > 0, "You need to mint at least 1 token");
         Sticker sticker = new Sticker(
             tokenName,
@@ -44,12 +55,12 @@ contract StickerFactory {
             initialPrice
         );
 
-        stickers.push(address(sticker));
+        stickers.push(StickerInfo(address(sticker), msg.sender));
 
         emit NewSticker(address(sticker), msg.sender);
     }
 
-    function getAvailableSets() public view returns (address[] memory) {
+    function getAvailableSets() public view returns (StickerInfo[] memory) {
         return stickers;
     }
 
