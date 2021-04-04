@@ -7,7 +7,7 @@ import "./Sticker.sol";
 contract StickerFactory {
     address owner;
     address[] stickers;
-    mapping(address => Artist) artists;
+    mapping(address => Artist) public artists;
     
     struct Artist {
         address addr;
