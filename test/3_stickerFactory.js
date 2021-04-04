@@ -148,8 +148,6 @@ contract("StickerFactory", (accounts) => {
 
   it("Should register a new artist", async function () {
     const factoryInstance = await StickerFactory.deployed();
-    const sets = await factoryInstance.getAvailableSets();
-    assert(sets.length > 0, "No sets available. Unable to proceed with test");
 
     let error = null;
     await factoryInstance.registerArtist(
@@ -162,5 +160,16 @@ contract("StickerFactory", (accounts) => {
     });
 
     assert.equal(error, null, "A new artist was registered");
+  });
+
+  it("It should be possible to get the artist details", async function () {
+    const factoryInstance = await StickerFactory.deployed();
+
+    let error = null;
+    const artist = await factoryInstance.artists("0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7").catch((e) => {
+      error = e;
+    });
+    assert.equal(error, null, "It is not possible to get artist details");
+    assert.equal(artist.name, 'Banksy', "It is not possible to get artist name");
   });
 });
