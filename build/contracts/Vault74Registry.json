@@ -8593,7 +8593,8 @@
     }
   },
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-04-04T19:48:01.639Z",
+  "updatedAt": "2021-04-04T19:58:41.416Z",
+  "networkType": "ethereum",
   "devdoc": {
     "details": "Implements storage and assignment of Vault74 DwellerIDs",
     "kind": "dev",
