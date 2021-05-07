@@ -9,24 +9,22 @@ contract DwellerID {
     // The parent registry that created this identification contract
     address public registry;
     // The dweller represents the owner of this identification contract
-    address private dweller;
+    address public dweller;
     // This is the display name of a dweller
-    bytes32 private name;
+    string public name;
     // Optional photo identification of the dweller
-    // Stored as a split Multihash referencing IPFS hash of dwellers photo
-    bytes32 private photoHashBeg;
-    bytes32 private photoHashEnd;
+    string public photoHash;
+    // String public key
+    bytes public pubkey;
+    // User status message
+    string public status = "Sitting in orbit...";
 
     address[] private servers;
 
-    string public status = "Sitting in orbit...";
 
     // Events
     event DwellerSet(address indexed dweller);
-    event PhotoSet (
-        bytes32 indexed photoHashBeg,
-        bytes32 indexed photoHashEnd
-    );
+    event PhotoSet (string indexed photoHash);
 
     // modifier to check if caller is owner
     modifier isOwner() {
@@ -50,10 +48,11 @@ contract DwellerID {
      * @dev Set contract deployer as dweller (owner)
      * @param _name What should we call you, dweller?
      */
-    constructor(bytes32 _name, address _dweller) {
+    constructor(string memory _name, address _dweller, bytes memory _pubkey) {
         registry = msg.sender;
         dweller = _dweller;
         name = _name;
+        pubkey = _pubkey;
         emit DwellerSet(dweller);
     }
 
@@ -65,62 +64,22 @@ contract DwellerID {
      * @dev Return owner address 
      * @return address_ owner address of dweller 
      * @return name_ name of the dweller
-     * @return photoIPFSHash1_ part 1 of the dwellers photo IPFS hash
-     * @return photoIPFSHash2_ part 2 of the dwellers photo IPFS hash
+     * @return photoHash_ string representation of the IPFS hash
+     * @return pubkey_ user public key
+     * @return status_ user status message
      */
     function getDweller() 
         external 
         view 
         returns (
             address address_, 
-            bytes32 name_,
-            bytes32 photoIPFSHash1_,
-            bytes32 photoIPFSHash2_
+            string memory name_, 
+            string memory photoHash_, 
+            bytes memory pubkey_,
+            string memory status_
         )
     {
-        return (dweller, name, photoHashBeg, photoHashEnd);
-    }
-
-    /**
-     * @dev Return dweller's address (owner address)
-     * @return dweller address
-     */
-    function getDwellerAddress() 
-        external 
-        view 
-        returns (address) 
-    {
-        return dweller;
-    }
-
-    /**
-     * @dev Return dweller's name (display name)
-     * @return dweller name
-     */
-    function getDwellerName() 
-        external 
-        view 
-        returns (bytes32) 
-    {
-        return name;
-    }
-
-    /**
-     * @dev Get the dweller's photo IPFS hash
-     * @return dweller photo IPFS hash
-     */
-    function getPhoto() 
-        public 
-        view 
-        returns (bytes memory) 
-    {
-        bytes memory joined = new bytes(64);
-        // Join the two hash parts of photos IPFS hash
-        assembly {
-            mstore(add(joined, 32), sload(photoHashBeg.slot))
-            mstore(add(joined, 64), sload(photoHashEnd.slot))
-        }
-        return joined; 
+        return (dweller, name, photoHash, pubkey, status);
     }
 
     function getServers() 
@@ -131,10 +90,6 @@ contract DwellerID {
     {
         return servers;
     }
-
-    /**
-     * Setters
-     */
 
     /**
      * @dev Add a server from list of server contracts
@@ -170,7 +125,7 @@ contract DwellerID {
      * @dev Change dweller's display name
      * @param _name What should we call you, dweller?
      */
-    function setDwellerName(bytes32 _name) 
+    function setDwellerName(string memory _name) 
         public
         isOwner
     {
@@ -179,15 +134,14 @@ contract DwellerID {
 
     /**
      * @dev Change dweller's display photo. Consider using PNG or JPEG photos for usability.
-     * @param hash split multihash referencing the IPFS hash for the photo
+     * @param _photoHash string representation of the IPFS hash
      */
-    function setPhoto(bytes32[2] memory hash) 
+    function setPhoto(string memory _photoHash) 
         public 
         isOwner 
     {
-        photoHashBeg = hash[0];
-        photoHashEnd = hash[1];
-        emit PhotoSet(photoHashBeg, photoHashEnd);
+        photoHash = _photoHash;
+        emit PhotoSet(photoHash);
     }
 
     /**

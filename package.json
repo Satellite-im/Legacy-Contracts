@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "npx truffle test",
-    "start:ganache": "ganache-cli",
+    "start:ganache": "sh ./start-ganache.sh",
     "deploy:mumbai": "npx truffle deploy --network mumbai",
     "flat": "npx truffle-flattener contracts/Vault74Registry.sol > build/registry-flat.sol",
     "build": "npx truffle build"

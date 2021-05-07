@@ -12,19 +12,36 @@ contract Vault74Registry {
     mapping(address => address) internal dwellers;
 
     /**
+     * @dev Converts the given public key to ethereum address
+     * @return addr
+     */
+    function calculateAddress(bytes memory pub) public pure returns (address addr) {
+        bytes32 hash = keccak256(pub);
+        assembly {
+            mstore(0, hash)
+            addr := mload(0)
+        }    
+    }
+
+    modifier isPubKeyOwner(bytes memory pub) {
+        require(calculateAddress(pub) == msg.sender, "Given public key does not belong to the sender");
+        _;
+    }
+
+    /**
      * @dev Create a new dweller identification contract
      * @param name The name this dweller wishes to go by
      */
-    function createDweller(bytes32 name) 
+    function createDweller(string memory name, bytes memory pubkey) 
         public 
+        isPubKeyOwner(pubkey)
         returns(address newDwellerId) 
     {
-        address sender = msg.sender;
         // Make sure this user doesn't already have an ID assigned.
-        assert(dwellers[sender] == address(0));
+        require(dwellers[msg.sender] == address(0), "Dweller already registered");
         // Create a new ID for the sender.
-        DwellerID dwellerId = new DwellerID(name, sender);
-        dwellers[sender] = address(dwellerId);
+        DwellerID dwellerId = new DwellerID(name, msg.sender, pubkey);
+        dwellers[msg.sender] = address(dwellerId);
         return address(dwellerId);
     }
 
