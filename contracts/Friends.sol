@@ -10,14 +10,12 @@ contract Friends {
     
     struct FriendRequest {
         address sender;
-        bytes pubkey;
+        string encryptedKey;
     }
 
     struct Friend {
         address dweller; // Address of the friend
-        bytes32 threadHash1; // Part 1 of the convorsation ThreadID
-        bytes32 threadHash2; // Part 2 of the convorsation ThreadID
-        bytes pubkey; // Public key used to compute ECDH (Elliptic Curve Diffie Helman)
+        string encryptedKey;
     }
     
     uint MAX_UINT = uint256(-1);
@@ -152,13 +150,13 @@ contract Friends {
     /**
      * @dev Add a new friend request
      */
-    function makeRequest(address to, bytes memory pubkey) public {
+    function makeRequest(address to, string memory encryptedKey) public {
         uint index = requestsTracker[to][msg.sender];
         require(index == 0 || index == MAX_UINT, "Request already sent");
 
         _addRequest(
             to,
-            FriendRequest(msg.sender, pubkey)
+            FriendRequest(msg.sender, encryptedKey)
         );
 
         emit FriendRequestSent(to);
@@ -167,7 +165,7 @@ contract Friends {
     /**
      * @dev Accept a friend request
      */
-    function acceptRequest(address to, bytes32[2] memory thread, bytes memory pubkey) public {
+    function acceptRequest(address to, string memory encryptedKey) public {
         uint friendRequestIndex = requestsTracker[msg.sender][to];
         
         // Check if the friend request has already been removed
@@ -180,17 +178,13 @@ contract Friends {
         // Current sender
         Friend memory receiverFriend = Friend(
             to,
-            thread[0],
-            thread[1],
-            friendRequest.pubkey
+            friendRequest.encryptedKey
         );
         
         // Original sender of the request
         Friend memory senderFriend = Friend(
             msg.sender,
-            thread[0],
-            thread[1],
-            pubkey
+            encryptedKey
         );
         
         _removeRequest(msg.sender, friendRequest.sender);

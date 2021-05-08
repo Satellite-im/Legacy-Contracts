@@ -1,49 +1,58 @@
-const ethers = require("ethers");
-const Registry = artifacts.require("Vault74Registry");
-const Friends = artifacts.require("Friends");
+const { ethers } = require('ethers')
+const Registry = artifacts.require('Vault74Registry')
+const Friends = artifacts.require('Friends')
+const { loadSecret, getWallet, processPublicKey } = require('../utils')
 
-contract("Registry", (accounts) => {
-    it("Registry contract should be deployed", async function () {
-        const instance = await Registry.deployed();
+const secret = loadSecret()
 
-        assert.notEqual(instance, null);
-    });
+contract('Registry', accounts => {
+  it('Registry contract should be deployed', async function () {
+    const instance = await Registry.deployed()
 
-    it("Friends contract should be deployed", async function () {
-        const instance = await Friends.deployed();
+    assert.notEqual(instance, null)
+  })
 
-        assert.notEqual(instance, null);
-    });
+  it('Friends contract should be deployed', async function () {
+    const instance = await Friends.deployed()
 
-    it("User should be able to register", async function () {
-        const instance = await Registry.deployed();
+    assert.notEqual(instance, null)
+  })
 
-        const username = ethers.utils.formatBytes32String("DwellerName");
+  it('User should be able to register', async function () {
+    const instance = await Registry.deployed()
 
-        let error = null;
+    const username = 'DwellerName'
+    const wallet = getWallet(secret, 0)
+    const pubkey = processPublicKey(wallet)
 
-        await instance.createDweller(username).catch(e=>{
-            error = e;
-        });
+    let error = null
 
-        assert.equal(error, null, "Unable to create dweller");
+    await instance.createDweller(username, pubkey).catch(e => {
+      error = e
+    })
 
-        const dwellerID = await instance.getDwellerId(accounts[0]);
+    assert.equal(error, null, 'Unable to create dweller')
 
-        assert.notEqual(dwellerID, ethers.constants.AddressZero, "Missing dweller address for the current account");
-    });
+    const dwellerID = await instance.getDwellerId(accounts[0])
 
-    it("User should be able to create a new server", async function () {
-        const instance = await Registry.deployed();
+    assert.notEqual(
+      dwellerID,
+      ethers.constants.AddressZero,
+      'Missing dweller address for the current account'
+    )
+  })
 
-        const serverName = ethers.utils.formatBytes32String("ServerName");
+  it('User should be able to create a new server', async function () {
+    const instance = await Registry.deployed()
 
-        let error = null;
+    const serverName = ethers.utils.formatBytes32String('ServerName')
 
-        await instance.createServer(serverName).catch(e=>{
-            error = e;
-        });
+    let error = null
 
-        assert.equal(error, null);
-    });
-});
+    await instance.createServer(serverName).catch(e => {
+      error = e
+    })
+
+    assert.equal(error, null)
+  })
+})
